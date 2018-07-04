@@ -1,3 +1,4 @@
+import os
 import random
 import time
 import boto3
@@ -97,8 +98,9 @@ def run_interactive():
 
 
 def run_daemon():
-    print("Running on port {}".format(PORT))
-    start_http_server(PORT)
+    port = os.environ.get("PORT", PORT)
+    print("Running on port {}".format(port))
+    start_http_server(int(port))
 
     while True:
         update_metrics()
