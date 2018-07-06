@@ -94,7 +94,7 @@ def update_metrics():
 
 def run_interactive():
     update_metrics()
-    print(generate_latest().decode("utf-8"))
+    return generate_latest().decode("utf-8")
 
 
 def run_daemon():
@@ -107,6 +107,16 @@ def run_daemon():
         time.sleep(INTERVAL_IN_SECONDS)
 
 
+def lambda_handler(event, context):
+    return {
+        'statusCode': 200,
+        'body': run_interactive(),
+        'headers': {
+            'Content-Type': 'text/plain',
+        },
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--daemonize",
@@ -116,7 +126,7 @@ def main():
     if args.daemonize:
         run_daemon()
     else:
-        run_interactive()
+        print(run_interactive())
 
 
 if __name__ == '__main__':
